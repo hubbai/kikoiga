@@ -1067,13 +1067,15 @@ body::after {
   }
   .hero-content {
     padding: 80px 20px 0;
+    text-align: center;
+    margin: 0 auto;
   }
-  .hero h1 { font-size: clamp(38px, 11vw, 56px); margin-bottom: 20px; }
+  .hero-eyebrow { font-size: 12px; margin-bottom: 20px; padding: 8px 16px; letter-spacing: 0.12em; }
+  .hero h1 { font-size: clamp(42px, 12vw, 60px); margin-bottom: 20px; }
   .hero h1 .italic-line { font-size: 0.5em; margin-top: 10px; }
-  .hero-sub { font-size: 17px; margin-bottom: 28px; }
-  .hero-eyebrow { font-size: 11px; margin-bottom: 20px; padding: 7px 14px; letter-spacing: 0.12em; }
-  .btn-primary { padding: 15px 30px; font-size: 14px; }
-  .hero-micro { font-size: 11px; }
+  .hero-sub { font-size: 18px; margin-bottom: 28px; max-width: 440px; margin-left: auto; margin-right: auto; }
+  .btn-primary { padding: 16px 32px; font-size: 15px; }
+  .hero-micro { font-size: 12px; }
 
   .hero-stats {
     flex-direction: row;
@@ -1161,11 +1163,11 @@ body::after {
    RESPONSIVE — 480px (small phones)
    ══════════════════════════════════════════ */
 @media (max-width: 480px) {
-  .hero h1 { font-size: clamp(32px, 12vw, 44px); }
+  .hero h1 { font-size: clamp(36px, 13vw, 48px); }
   .hero h1 .italic-line { font-size: 0.48em; }
   .hero-content { padding-top: 70px; }
-  .hero-sub { font-size: 15px; max-width: 300px; }
-  .btn-primary { padding: 14px 24px; font-size: 13px; gap: 6px; }
+  .hero-sub { font-size: 16px; max-width: 320px; }
+  .btn-primary { padding: 15px 28px; font-size: 14px; gap: 6px; }
 
   .hero-stat-num { font-size: 26px; }
   .hero-stat-label { font-size: 8px; letter-spacing: 0.08em; }
@@ -1384,7 +1386,7 @@ body::after {
       </div>
     </div>
     <div class="dest-card reveal">
-      <img src="https://images.unsplash.com/photo-1596627116790-af6f46dddbcf?w=600&q=80" alt="Costa Amalfi, Italia" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1455587734955-081b22074882?w=600&q=80" alt="Costa Amalfi, Italia" loading="lazy">
       <div class="overlay"></div>
       <div class="info">
         <span class="dest-tag">ITALIA</span>
