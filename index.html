@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kiko Iga — Concierge de Viaje Privado</title>
+<meta name="description" content="Concierge de viaje privado para viajeros exigentes. Itinerarios únicos, acceso VIP y acompañamiento total.">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Barlow:wght@300;400;500&family=Lora:ital,wght@0,400;1,400&display=swap');
+
+:root {
+  --navy:        #0e2336;
+  --navy-mid:    #143249;
+  --steel:       #759dba;
+  --steel-light: #a8c4d8;
+  --wine:        #a52f2e;
+  --wine-dark:   #661916;
+  --cream:       #f9f0da;
+  --cream-dim:   rgba(249,240,218,0.88);
+  --glass:       rgba(255,255,255,0.06);
+  --glass-mid:   rgba(249,240,218,0.10);
+  --glass-border:rgba(255,255,255,0.12);
+  --text-muted:  rgba(255,255,255,0.70);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Barlow', sans-serif;
+  font-weight: 300;
+  background: var(--navy);
+  color: var(--text-muted);
+  line-height: 1.75;
+  font-size: 17px;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; display: block; }
+a { text-decoration: none; color: inherit; }
+
+/* ── FILM GRAIN OVERLAY ── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 128px 128px;
+}
+
+/* ── REVEAL ANIMATIONS ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* ── HERO ENTRANCE ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(36px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(1.08); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.hero-anim { opacity: 0; animation-fill-mode: forwards; }
+.hero-anim-1 { animation: fadeUp 1s cubic-bezier(0.16,1,0.3,1) 0.3s forwards; }
+.hero-anim-2 { animation: fadeUp 1s cubic-bezier(0.16,1,0.3,1) 0.5s forwards; }
+.hero-anim-3 { animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.7s forwards; }
+.hero-anim-4 { animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.9s forwards; }
+.hero-anim-5 { animation: fadeIn 1.2s ease 1.2s forwards; }
+
+/* ══════════════════════════════════════════
+   SECTION 1 — FLOATING NAV
+   ══════════════════════════════════════════ */
+#nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 48px;
+  transition: all 0.5s cubic-bezier(0.16,1,0.3,1);
+  border-bottom: 1px solid transparent;
+}
+#nav.scrolled {
+  background: rgba(14,35,54,0.88);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom-color: var(--glass-border);
+  padding: 16px 48px;
+}
+
+.nav-logo {
+  height: 30px;
+  filter: invert(1) sepia(1) saturate(0.05) brightness(2);
+  transition: opacity 0.3s;
+}
+.nav-logo:hover { opacity: 0.75; }
+
+.nav-cta {
+  display: inline-block;
+  border: 1.5px solid rgba(249,240,218,0.4);
+  background: transparent;
+  color: var(--cream);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  padding: 10px 24px;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+  transition: color 0.4s, border-color 0.4s;
+  cursor: pointer;
+}
+.nav-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--wine);
+  transform: translateX(-101%);
+  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+  z-index: -1;
+}
+.nav-cta:hover::before { transform: translateX(0); }
+.nav-cta:hover { border-color: var(--wine); color: #fff; }
+
+/* ══════════════════════════════════════════
+   SECTION 2 — HERO (IMMERSIVE VIDEO)
+   ══════════════════════════════════════════ */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.hero-video-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+.hero-video-wrap video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: scaleIn 2s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(180deg, rgba(14,35,54,0.65) 0%, rgba(14,35,54,0.45) 40%, rgba(14,35,54,0.70) 70%, rgba(14,35,54,0.95) 100%),
+    linear-gradient(135deg, rgba(14,35,54,0.60) 0%, transparent 60%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  padding: 0 48px;
+  padding-bottom: 140px;
+  max-width: 880px;
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.85);
+  margin-bottom: 28px;
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 100px;
+  padding: 9px 20px;
+}
+
+.hero h1 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-size: clamp(48px, 8vw, 96px);
+  text-transform: uppercase;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  color: var(--cream);
+  margin-bottom: 24px;
+}
+.hero h1 .italic-line {
+  display: block;
+  font-family: 'Lora', serif;
+  font-weight: 400;
+  font-style: italic;
+  text-transform: none;
+  color: var(--steel-light);
+  font-size: 0.55em;
+  line-height: 1.3;
+  margin-top: 12px;
+  letter-spacing: 0;
+}
+
+.hero-sub {
+  font-family: 'Barlow', sans-serif;
+  font-weight: 300;
+  font-size: 22px;
+  color: rgba(255,255,255,0.90);
+  max-width: 540px;
+  line-height: 1.65;
+  margin-bottom: 32px;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--wine);
+  color: #fff;
+  padding: 18px 40px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+.btn-primary:hover {
+  background: var(--wine-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 48px rgba(165,47,46,0.5);
+}
+.btn-primary .arrow {
+  display: inline-block;
+  transition: transform 0.3s;
+  font-size: 16px;
+}
+.btn-primary:hover .arrow { transform: translateX(5px); }
+
+.hero-micro {
+  font-size: 12px;
+  color: rgba(255,255,255,0.70);
+  margin-top: 16px;
+  letter-spacing: 0.03em;
+}
+.hero-micro span {
+  display: inline-block;
+  margin: 0 4px;
+  opacity: 0.5;
+}
+
+/* Hero Stats Bar */
+.hero-stats {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  background: rgba(14,35,54,0.60);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border-top: 1px solid rgba(255,255,255,0.07);
+  display: flex;
+}
+.hero-stat {
+  flex: 1;
+  padding: 28px 36px;
+  text-align: center;
+  border-right: 1px solid rgba(255,255,255,0.06);
+  transition: background 0.3s;
+}
+.hero-stat:last-child { border-right: none; }
+.hero-stat:hover { background: rgba(255,255,255,0.03); }
+.hero-stat-num {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-size: 44px;
+  color: var(--cream);
+  line-height: 1;
+}
+.hero-stat-num .accent { color: var(--wine); }
+.hero-stat-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.60);
+  margin-top: 8px;
+}
+
+/* ══════════════════════════════════════════
+   SHARED — Section headers
+   ══════════════════════════════════════════ */
+.section-eyebrow {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--wine);
+  margin-bottom: 14px;
+}
+.section-h2 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-size: clamp(40px, 6vw, 68px);
+  text-transform: uppercase;
+  line-height: 0.92;
+  letter-spacing: -0.01em;
+  color: var(--cream);
+  margin-bottom: 56px;
+}
+.section-h2 .italic {
+  display: block;
+  font-family: 'Lora', serif;
+  font-weight: 400;
+  font-style: italic;
+  text-transform: none;
+  color: var(--steel-light);
+  font-size: 0.65em;
+  margin-top: 6px;
+  letter-spacing: 0;
+}
+
+/* ══════════════════════════════════════════
+   VSL VIDEO SECTION
+   ══════════════════════════════════════════ */
+.vsl-section {
+  padding: 100px 48px;
+  border-bottom: 1px solid var(--glass-border);
+}
+.vsl-inner {
+  max-width: 900px;
+  margin: 0 auto;
+}
+.vsl-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+.vsl-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: #000;
+  border: 1px solid rgba(249,240,218,0.10);
+  overflow: hidden;
+}
+.vsl-wrapper video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+}
+
+/* ══════════════════════════════════════════
+   SECTION 4 — PROBLEM
+   ══════════════════════════════════════════ */
+.problem-section {
+  padding: 120px 48px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.problem-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  background: var(--glass-border);
+}
+.problem-card {
+  background: var(--navy);
+  padding: 48px 36px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
+}
+.problem-card::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--wine);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.6s cubic-bezier(0.16,1,0.3,1);
+}
+.problem-card:hover::before { transform: scaleX(1); }
+.problem-card:hover { transform: translateY(-4px); }
+
+.problem-num {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-size: 80px;
+  color: var(--wine);
+  line-height: 1;
+  margin-bottom: 20px;
+}
+.problem-card h3 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+  text-transform: uppercase;
+  color: var(--cream);
+  margin-bottom: 14px;
+  line-height: 1.2;
+}
+.problem-card p {
+  font-size: 17px;
+  line-height: 1.75;
+  color: var(--text-muted);
+}
+
+.resolution-box {
+  margin-top: 56px;
+  background: var(--glass-mid);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(249,240,218,0.10);
+  padding: 40px 44px;
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+.resolution-arrow {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 32px;
+  color: var(--wine);
+  flex-shrink: 0;
+  line-height: 1;
+}
+.resolution-text {
+  font-family: 'Lora', serif;
+  font-style: italic;
+  font-size: 20px;
+  color: var(--cream-dim);
+  line-height: 1.7;
+}
+
+/* ══════════════════════════════════════════
+   SECTION 5 — KIKO IGA PERSONAL BRAND
+   ══════════════════════════════════════════ */
+.kiko-section {
+  padding: 120px 48px;
+  background: linear-gradient(135deg, var(--navy-mid) 0%, var(--navy) 100%);
+  border-top: 1px solid var(--glass-border);
+  border-bottom: 1px solid var(--glass-border);
+}
+.kiko-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.kiko-img-wrap {
+  position: relative;
+  max-width: 460px;
+}
+.kiko-img-wrap::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(135deg, var(--wine), var(--steel));
+  z-index: 0;
+}
+.kiko-img-wrap img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  aspect-ratio: 3/4;
+  max-height: 560px;
+  object-fit: cover;
+  object-position: top center;
+  filter: grayscale(15%) contrast(1.05);
+  transition: filter 0.6s;
+}
+.kiko-img-wrap:hover img { filter: grayscale(0%) contrast(1.05); }
+
+.kiko-accent-box {
+  position: absolute;
+  bottom: -20px;
+  right: -20px;
+  z-index: 2;
+  background: var(--wine);
+  padding: 22px 26px;
+}
+.kiko-accent-box .num {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-size: 38px;
+  color: #fff;
+  line-height: 1;
+}
+.kiko-accent-box .label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.7);
+  margin-top: 4px;
+}
+
+.kiko-copy .section-h2 { margin-bottom: 28px; }
+
+.kiko-blockquote {
+  border-left: 3px solid var(--wine);
+  padding-left: 24px;
+  margin-bottom: 24px;
+  font-family: 'Lora', serif;
+  font-style: italic;
+  font-size: 20px;
+  color: var(--cream-dim);
+  line-height: 1.7;
+}
+
+.kiko-body {
+  font-size: 17px;
+  line-height: 1.75;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+}
+
+.pills-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.pill {
+  border: 1px solid var(--glass-border);
+  background: var(--glass);
+  padding: 8px 16px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--steel-light);
+  transition: border-color 0.3s, color 0.3s, background 0.3s;
+}
+.pill:hover { border-color: var(--wine); color: var(--cream); background: rgba(165,47,46,0.06); }
+
+/* ══════════════════════════════════════════
+   SECTION 6 — SERVICES
+   ══════════════════════════════════════════ */
+.services-section {
+  padding: 120px 48px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.service-card {
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  padding: 44px 32px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.5s cubic-bezier(0.16,1,0.3,1), box-shadow 0.5s, border-color 0.5s;
+}
+.service-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(165,47,46,0.06), transparent);
+  opacity: 0;
+  transition: opacity 0.5s;
+  pointer-events: none;
+}
+.service-card:hover::after { opacity: 1; }
+.service-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(165,47,46,0.35);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+}
+
+.service-icon {
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-bottom: 24px;
+  transition: border-color 0.3s;
+}
+.service-card:hover .service-icon { border-color: var(--wine); }
+
+.service-card h3 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+  text-transform: uppercase;
+  color: var(--cream);
+  margin-bottom: 14px;
+  line-height: 1.2;
+}
+.service-card p {
+  font-size: 17px;
+  line-height: 1.75;
+  color: var(--text-muted);
+  position: relative;
+  z-index: 1;
+}
+
+/* ══════════════════════════════════════════
+   SECTION 7 — DESTINATIONS
+   ══════════════════════════════════════════ */
+.dest-section {
+  padding: 120px 0;
+  overflow: hidden;
+}
+.dest-section .dest-header {
+  padding: 0 48px;
+  margin-bottom: 48px;
+}
+.dest-scroll {
+  display: flex;
+  gap: 16px;
+  padding: 0 48px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  cursor: grab;
+  -ms-overflow-style: none;
+}
+.dest-scroll::-webkit-scrollbar { display: none; }
+.dest-scroll.grabbing { cursor: grabbing; }
+
+.dest-card {
+  flex-shrink: 0;
+  width: 340px;
+  height: 480px;
+  overflow: hidden;
+  scroll-snap-align: start;
+  position: relative;
+  border: 1px solid rgba(255,255,255,0.06);
+  transition: border-color 0.4s;
+}
+.dest-card:hover { border-color: rgba(249,240,218,0.15); }
+.dest-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.9) contrast(1.05);
+  transition: transform 0.7s cubic-bezier(0.16,1,0.3,1);
+}
+.dest-card:hover img { transform: scale(1.06); }
+
+.dest-card .overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(14,35,54,0.92) 0%, rgba(14,35,54,0.12) 55%, transparent);
+  pointer-events: none;
+}
+.dest-card .info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 28px 24px;
+  z-index: 2;
+}
+.dest-tag {
+  display: inline-block;
+  background: var(--wine);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #fff;
+  padding: 4px 10px;
+  margin-bottom: 10px;
+}
+.dest-card .info h3 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 800;
+  font-size: 26px;
+  text-transform: uppercase;
+  color: var(--cream);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.dest-card .info p {
+  font-family: 'Lora', serif;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* ══════════════════════════════════════════
+   SECTION 8 — TESTIMONIALS
+   ══════════════════════════════════════════ */
+.testimonials-section {
+  padding: 120px 48px;
+  background: var(--navy-mid);
+  border-top: 1px solid var(--glass-border);
+  border-bottom: 1px solid var(--glass-border);
+}
+.testimonials-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.test-card {
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  padding: 36px 32px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.5s cubic-bezier(0.16,1,0.3,1), border-color 0.4s;
+}
+.test-card::before {
+  content: '\201C';
+  position: absolute;
+  top: 12px;
+  right: 20px;
+  font-family: 'Lora', serif;
+  font-size: 76px;
+  color: rgba(165,47,46,0.10);
+  line-height: 1;
+  pointer-events: none;
+}
+.test-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(249,240,218,0.18);
+}
+
+.test-stars {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 18px;
+}
+.test-star {
+  width: 12px;
+  height: 12px;
+  background: var(--wine);
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.test-quote {
+  font-family: 'Lora', serif;
+  font-style: italic;
+  font-size: 17px;
+  color: rgba(255,255,255,0.78);
+  line-height: 1.75;
+  margin-bottom: 20px;
+}
+
+.test-divider {
+  border-top: 1px solid var(--glass-border);
+  padding-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.test-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--wine-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--cream);
+  flex-shrink: 0;
+}
+.test-author-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  text-transform: uppercase;
+  color: var(--cream);
+  line-height: 1.2;
+}
+.test-author-loc {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+
+/* ══════════════════════════════════════════
+   SECTION 9 — HOW IT WORKS
+   ══════════════════════════════════════════ */
+.process-section {
+  padding: 120px 48px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.process-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  background: var(--glass-border);
+}
+.process-card {
+  background: var(--navy);
+  padding: 52px 36px;
+  position: relative;
+  overflow: hidden;
+}
+.process-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 0;
+  background: var(--wine);
+  transition: height 0.6s cubic-bezier(0.16,1,0.3,1);
+}
+.process-card:hover::before { height: 100%; }
+
+.process-ghost {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900;
+  font-size: 88px;
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  line-height: 1;
+  color: rgba(165,47,46,0.85);
+  transition: color 0.5s;
+  pointer-events: none;
+}
+.process-card:hover .process-ghost { color: var(--wine); }
+
+.process-card h3 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 800;
+  font-size: 28px;
+  text-transform: uppercase;
+  color: var(--cream);
+  margin-bottom: 14px;
+  line-height: 1.15;
+  position: relative;
+}
+.process-card p {
+  font-size: 17px;
+  line-height: 1.75;
+  color: var(--text-muted);
+  position: relative;
+}
+.process-badge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  position: relative;
+}
+.process-badge::before {
+  content: '';
+  width: 20px;
+  height: 1.5px;
+  background: var(--wine);
+  flex-shrink: 0;
+}
+.process-badge span {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--steel-light);
+}
+
+/* ══════════════════════════════════════════
+   SECTION 10 — BOOKING
+   ══════════════════════════════════════════ */
+.booking-section {
+  padding: 120px 48px;
+  position: relative;
+  border-top: 1px solid var(--glass-border);
+}
+.booking-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 50%, rgba(165,47,46,0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(117,157,186,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.booking-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+.booking-header {
+  text-align: center;
+  margin-bottom: 56px;
+}
+.booking-header .section-h2 { margin-bottom: 20px; }
+.booking-sub {
+  font-family: 'Barlow', sans-serif;
+  font-weight: 300;
+  font-size: 18px;
+  color: var(--text-muted);
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+.booking-wrapper {
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(249,240,218,0.10);
+  min-height: 600px;
+  overflow: hidden;
+}
+.booking-wrapper iframe {
+  width: 100%;
+  min-height: 600px;
+  border: none;
+}
+
+.booking-fine {
+  text-align: center;
+  font-size: 12px;
+  color: rgba(255,255,255,0.50);
+  margin-top: 24px;
+  letter-spacing: 0.02em;
+}
+.booking-wa {
+  display: block;
+  text-align: center;
+  margin-top: 10px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: var(--steel);
+  transition: color 0.3s;
+}
+.booking-wa:hover { color: var(--cream); }
+
+/* ══════════════════════════════════════════
+   SECTION 11 — FOOTER
+   ══════════════════════════════════════════ */
+.footer {
+  padding: 36px 48px;
+  border-top: 1px solid var(--glass-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer-logo {
+  height: 24px;
+  filter: invert(1) sepia(1) saturate(0.05) brightness(2);
+  opacity: 0.35;
+  transition: opacity 0.3s;
+}
+.footer-logo:hover { opacity: 0.6; }
+.footer-copy {
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 0.05em;
+}
+.footer-center a {
+  color: rgba(255,255,255,0.40);
+  font-size: 16px;
+  transition: color 0.3s;
+}
+.footer-center a:hover { color: var(--cream); }
+
+/* ══════════════════════════════════════════
+   RESPONSIVE — 1024px
+   ══════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .kiko-grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+  .kiko-img-wrap {
+    max-width: 380px;
+    margin: 0 auto;
+  }
+  .services-grid { grid-template-columns: 1fr 1fr; }
+  .testimonials-grid { grid-template-columns: 1fr; max-width: 600px; }
+  .process-grid { grid-template-columns: 1fr; }
+  .problem-grid { grid-template-columns: 1fr; }
+
+  .hero-content { max-width: 700px; }
+  .hero h1 { font-size: clamp(44px, 8vw, 72px); }
+
+  .dest-card { width: 300px; height: 440px; }
+}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE — 768px
+   ══════════════════════════════════════════ */
+@media (max-width: 768px) {
+  #nav { padding: 16px 20px; }
+  #nav.scrolled { padding: 12px 20px; }
+  .nav-logo { height: 24px; }
+  .nav-cta { font-size: 11px; padding: 8px 16px; letter-spacing: 0.1em; }
+
+  .hero {
+    min-height: 100svh;
+    justify-content: center;
+  }
+  .hero-content {
+    padding: 80px 20px 0;
+  }
+  .hero h1 { font-size: clamp(38px, 11vw, 56px); margin-bottom: 20px; }
+  .hero h1 .italic-line { font-size: 0.5em; margin-top: 10px; }
+  .hero-sub { font-size: 17px; margin-bottom: 28px; }
+  .hero-eyebrow { font-size: 11px; margin-bottom: 20px; padding: 7px 14px; letter-spacing: 0.12em; }
+  .btn-primary { padding: 15px 30px; font-size: 14px; }
+  .hero-micro { font-size: 11px; }
+
+  .hero-stats {
+    flex-direction: row;
+    position: relative;
+    margin-top: auto;
+  }
+  .hero-stat {
+    padding: 16px 12px;
+  }
+  .hero-stat-num { font-size: 30px; }
+  .hero-stat-label { font-size: 11px; letter-spacing: 0.1em; }
+
+  .vsl-section,
+  .problem-section,
+  .services-section,
+  .process-section,
+  .booking-section {
+    padding: 80px 20px;
+  }
+  .kiko-section,
+  .testimonials-section {
+    padding: 80px 20px;
+  }
+
+  .section-h2 { font-size: clamp(30px, 8vw, 44px); margin-bottom: 40px; }
+  .section-eyebrow { font-size: 12px; }
+
+  .problem-card { padding: 36px 24px; }
+  .problem-num { font-size: 64px; }
+  .problem-card h3 { font-size: 20px; }
+
+  .resolution-box {
+    flex-direction: column;
+    padding: 28px 20px;
+    gap: 16px;
+  }
+  .resolution-text { font-size: 17px; }
+
+  .kiko-img-wrap { max-width: 240px; }
+  .kiko-accent-box {
+    bottom: -14px;
+    right: -10px;
+    padding: 16px 20px;
+  }
+  .kiko-accent-box .num { font-size: 30px; }
+  .kiko-accent-box .label { font-size: 9px; }
+  .kiko-blockquote { font-size: 17px; padding-left: 18px; }
+  .kiko-body { font-size: 15px; }
+  .pill { font-size: 11px; padding: 7px 12px; }
+
+  .services-grid { grid-template-columns: 1fr; }
+  .service-card { padding: 36px 24px; }
+  .service-card h3 { font-size: 20px; }
+
+  .dest-section { padding: 80px 0; }
+  .dest-section .dest-header { padding: 0 20px; }
+  .dest-scroll { padding: 0 20px; gap: 12px; }
+  .dest-card { width: 260px; height: 380px; }
+  .dest-card .info h3 { font-size: 22px; }
+  .dest-card .info p { font-size: 12px; }
+
+  .test-card { padding: 28px 24px; }
+  .test-quote { font-size: 15px; }
+
+  .process-card { padding: 40px 24px; }
+  .process-ghost { font-size: 72px; }
+  .process-card h3 { font-size: 22px; }
+
+  .booking-header { margin-bottom: 40px; }
+  .booking-sub { font-size: 16px; }
+  .booking-wrapper { min-height: 500px; }
+  .booking-wrapper iframe { min-height: 500px; }
+
+  .footer {
+    flex-direction: column;
+    gap: 14px;
+    text-align: center;
+    padding: 28px 20px;
+  }
+  .footer-logo { height: 20px; }
+  .footer-copy { font-size: 10px; }
+}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE — 480px (small phones)
+   ══════════════════════════════════════════ */
+@media (max-width: 480px) {
+  .hero h1 { font-size: clamp(32px, 12vw, 44px); }
+  .hero h1 .italic-line { font-size: 0.48em; }
+  .hero-content { padding-top: 70px; }
+  .hero-sub { font-size: 15px; max-width: 300px; }
+  .btn-primary { padding: 14px 24px; font-size: 13px; gap: 6px; }
+
+  .hero-stat-num { font-size: 26px; }
+  .hero-stat-label { font-size: 8px; letter-spacing: 0.08em; }
+  .hero-stat { padding: 14px 8px; }
+
+  .section-h2 { font-size: clamp(28px, 9vw, 36px); }
+  .section-eyebrow { font-size: 11px; }
+
+  .dest-card { width: 240px; height: 340px; }
+  .dest-card .info h3 { font-size: 20px; }
+
+  .kiko-img-wrap { max-width: 200px; }
+
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ SECTION 1 — NAV ═══ -->
+<nav id="nav">
+  <a href="#" aria-label="Kiko Iga — Inicio">
+    <img src="4. KIKO LOGO BLACK.png" alt="Kiko Iga" class="nav-logo">
+  </a>
+  <a href="#agendar" class="nav-cta">AGENDA TU LLAMADA</a>
+</nav>
+
+<!-- ═══ SECTION 2 — HERO ═══ -->
+<section class="hero">
+  <div class="hero-video-wrap">
+    <video src="vsl.mp4" autoplay muted loop playsinline preload="auto" poster="https://images.unsplash.com/photo-1533105079780-92b9be482077?w=1920&q=80"></video>
+  </div>
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow hero-anim hero-anim-1">
+      CONCIERGE DE VIAJE PRIVADO &middot; M&Eacute;XICO
+    </div>
+
+    <h1 class="hero-anim hero-anim-2">
+      CADA DETALLE<br>GESTIONADO.
+      <span class="italic-line">Cada historia, extraordinaria.</span>
+    </h1>
+
+    <p class="hero-sub hero-anim hero-anim-3">
+      Para quienes no viajan para escapar &mdash; viajan para vivir algo que solo ellos van a contar.
+    </p>
+
+    <div class="hero-anim hero-anim-4">
+      <a href="#agendar" class="btn-primary">
+        AGENDA TU LLAMADA <span class="arrow">&rarr;</span>
+      </a>
+      <p class="hero-micro">Sin costo <span>&middot;</span> Sin compromiso <span>&middot;</span> Respuesta en 24hrs</p>
+    </div>
+  </div>
+
+  <div class="hero-stats hero-anim hero-anim-5">
+    <div class="hero-stat">
+      <div class="hero-stat-num">300<span class="accent">+</span></div>
+      <div class="hero-stat-label">Viajeros transformados</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">50<span class="accent">+</span></div>
+      <div class="hero-stat-label">Destinos con acceso VIP</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">100<span class="accent">%</span></div>
+      <div class="hero-stat-label">Itinerarios &uacute;nicos</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 4 — PROBLEM ═══ -->
+<section class="problem-section">
+  <div class="reveal">
+    <p class="section-eyebrow">EL PROBLEMA REAL</p>
+    <h2 class="section-h2">
+      VIAJAR BIEN ES F&Aacute;CIL.
+      <span class="italic">Viajar extraordinario, no.</span>
+    </h2>
+  </div>
+
+  <div class="problem-grid">
+    <div class="problem-card reveal reveal-delay-1">
+      <div class="problem-num">01</div>
+      <h3>Semanas investigando, d&iacute;as perdidos</h3>
+      <p>Comparas hoteles en 12 sitios, lees 200 rese&ntilde;as y a&uacute;n no sabes si tomaste la decisi&oacute;n correcta. Tu tiempo vale m&aacute;s que eso.</p>
+    </div>
+    <div class="problem-card reveal reveal-delay-2">
+      <div class="problem-num">02</div>
+      <h3>Pagas precio de lista para todo</h3>
+      <p>Llegas al mejor hotel del mundo y recibes la habitaci&oacute;n est&aacute;ndar porque nadie gestion&oacute; tu llegada. El upgrade exist&iacute;a &mdash; nadie lo pidi&oacute;.</p>
+    </div>
+    <div class="problem-card reveal reveal-delay-3">
+      <div class="problem-num">03</div>
+      <h3>Sin red cuando algo falla</h3>
+      <p>Vuelo cancelado a las 11pm en un pa&iacute;s extranjero. Sin contacto directo. Solo t&uacute; y el hold de servicio al cliente de aerol&iacute;nea.</p>
+    </div>
+  </div>
+
+  <div class="resolution-box reveal">
+    <div class="resolution-arrow">&rarr;</div>
+    <div class="resolution-text">
+      <em>Kiko Iga existe para que esto nunca sea tu historia. Cada viaje tiene a alguien que ya estuvo ah&iacute;, que conoce al concierge del hotel, y que tiene tu tel&eacute;fono guardado.</em>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 5 — KIKO IGA ═══ -->
+<section class="kiko-section">
+  <div class="kiko-grid">
+    <div class="kiko-img-wrap reveal">
+      <img src="kiko-photo.png" alt="Kiko Iga — Concierge de Viaje Privado" loading="lazy">
+      <div class="kiko-accent-box">
+        <div class="num">300+</div>
+        <div class="label">VIAJES DISE&Ntilde;ADOS</div>
+      </div>
+    </div>
+
+    <div class="kiko-copy reveal reveal-delay-1">
+      <p class="section-eyebrow">QUI&Eacute;N ES KIKO IGA</p>
+      <h2 class="section-h2">
+        NO SOY UNA AGENCIA.
+        <span class="italic">Soy tu curador.</span>
+      </h2>
+      <blockquote class="kiko-blockquote">
+        &ldquo;He recorrido el mundo para que t&uacute; no tengas que adivinarlo. S&eacute; qu&eacute; suite pedir en el Four Seasons de Tokio, qu&eacute; restaurante no est&aacute; en TripAdvisor pero es el mejor de Roma, y a qui&eacute;n llamar si algo sale mal.&rdquo;
+      </blockquote>
+      <p class="kiko-body">
+        Soy creador de contenido y viajero apasionado. He ayudado a m&aacute;s de 300 familias y parejas a planear, maximizar y vivir el viaje de sus sue&ntilde;os &mdash; no solo una reservaci&oacute;n, sino una experiencia completa de principio a fin.
+      </p>
+      <div class="pills-row">
+        <span class="pill">ITINERARIOS &Uacute;NICOS</span>
+        <span class="pill">ACCESO VIP +50 DESTINOS</span>
+        <span class="pill">ACOMPA&Ntilde;AMIENTO 24/7</span>
+        <span class="pill">SIN COSTOS OCULTOS</span>
+        <span class="pill">CREADOR DE CONTENIDO</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 6 — SERVICES ═══ -->
+<section class="services-section">
+  <div class="reveal">
+    <p class="section-eyebrow">C&Oacute;MO TRABAJO</p>
+    <h2 class="section-h2">
+      LO QUE INCLUYE
+      <span class="italic">trabajar conmigo</span>
+    </h2>
+  </div>
+
+  <div class="services-grid">
+    <div class="service-card reveal reveal-delay-1">
+      <div class="service-icon">&#x1F9ED;</div>
+      <h3>DISE&Ntilde;O PERSONALIZADO</h3>
+      <p>Desde la primera llamada hasta el &uacute;ltimo transfer, cada decisi&oacute;n tiene intenci&oacute;n. Tu itinerario no es una plantilla &mdash; es completamente tuyo.</p>
+    </div>
+    <div class="service-card reveal reveal-delay-2">
+      <div class="service-icon">&#x1F3DB;</div>
+      <h3>ACCESO PREFERENCIAL</h3>
+      <p>Gracias a mis relaciones con las mejores propiedades del mundo, accedes a upgrades, amenidades y beneficios que no est&aacute;n disponibles al p&uacute;blico general.</p>
+    </div>
+    <div class="service-card reveal reveal-delay-3">
+      <div class="service-icon">&#x2708;&#xFE0F;</div>
+      <h3>GESTI&Oacute;N TOTAL</h3>
+      <p>Si algo cambia durante tu viaje, yo lo resuelvo. Disponible las 24hrs para que t&uacute; solo pienses en disfrutar cada momento.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 7 — DESTINATIONS ═══ -->
+<section class="dest-section">
+  <div class="dest-header reveal">
+    <p class="section-eyebrow">DESTINOS</p>
+    <h2 class="section-h2">
+      DISE&Ntilde;ADOS PARA
+      <span class="italic">quienes saben vivir</span>
+    </h2>
+  </div>
+
+  <div class="dest-scroll">
+    <div class="dest-card reveal reveal-delay-1">
+      <img src="https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=600&q=80" alt="Santorini, Grecia" loading="lazy">
+      <div class="overlay"></div>
+      <div class="info">
+        <span class="dest-tag">EUROPA</span>
+        <h3>SANTORINI</h3>
+        <p>Donde el mar Egeo y las c&uacute;pulas azules se convierten en eternidad</p>
+      </div>
+    </div>
+    <div class="dest-card reveal reveal-delay-2">
+      <img src="https://images.unsplash.com/photo-1573843981267-be1999ff37cd?w=600&q=80" alt="Maldivas" loading="lazy">
+      <div class="overlay"></div>
+      <div class="info">
+        <span class="dest-tag">LUJO EXTREMO</span>
+        <h3>MALDIVAS</h3>
+        <p>Villa sobre el agua. El oc&eacute;ano, tu jard&iacute;n</p>
+      </div>
+    </div>
+    <div class="dest-card reveal reveal-delay-3">
+      <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600&q=80" alt="Tokio, Jap&oacute;n" loading="lazy">
+      <div class="overlay"></div>
+      <div class="info">
+        <span class="dest-tag">ASIA</span>
+        <h3>TOKIO</h3>
+        <p>La ciudad que te cambia. Sin gu&iacute;a, nunca la conoces de verdad</p>
+      </div>
+    </div>
+    <div class="dest-card reveal reveal-delay-4">
+      <img src="https://images.unsplash.com/photo-1516426122078-c23e76319801?w=600&q=80" alt="Safari en &Aacute;frica" loading="lazy">
+      <div class="overlay"></div>
+      <div class="info">
+        <span class="dest-tag">&Aacute;FRICA</span>
+        <h3>SAFARI &Aacute;FRICA</h3>
+        <p>Amanecer en la sabana. Una experiencia que no se olvida</p>
+      </div>
+    </div>
+    <div class="dest-card reveal">
+      <img src="https://images.unsplash.com/photo-1596627116790-af6f46dddbcf?w=600&q=80" alt="Costa Amalfi, Italia" loading="lazy">
+      <div class="overlay"></div>
+      <div class="info">
+        <span class="dest-tag">ITALIA</span>
+        <h3>COSTA AMALFI</h3>
+        <p>La carretera m&aacute;s bella del mundo, sin el caos de organizarla solo</p>
+      </div>
+    </div>
+    <div class="dest-card reveal">
+      <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600&q=80" alt="Par&iacute;s, Francia" loading="lazy">
+      <div class="overlay"></div>
+      <div class="info">
+        <span class="dest-tag">FRANCIA</span>
+        <h3>PAR&Iacute;S</h3>
+        <p>La ciudad luz merece vivirla con acceso a lo que no sale en las gu&iacute;as</p>
+      </div>
+    </div>
+    <div class="dest-card reveal">
+      <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=600&q=80" alt="Dub&aacute;i" loading="lazy">
+      <div class="overlay"></div>
+      <div class="info">
+        <span class="dest-tag">MEDIO ORIENTE</span>
+        <h3>DUB&Aacute;I</h3>
+        <p>Donde el futuro ya lleg&oacute;. Lujo sin l&iacute;mites en el desierto</p>
+      </div>
+    </div>
+    <div class="dest-card reveal">
+      <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=600&q=80" alt="Bali, Indonesia" loading="lazy">
+      <div class="overlay"></div>
+      <div class="info">
+        <span class="dest-tag">ASIA</span>
+        <h3>BALI</h3>
+        <p>Templos, arrozales y villas privadas. Espiritualidad con lujo</p>
+      </div>
+    </div>
+    <div class="dest-card reveal">
+      <img src="https://images.unsplash.com/photo-1548013146-72479768bada?w=600&q=80" alt="India" loading="lazy">
+      <div class="overlay"></div>
+      <div class="info">
+        <span class="dest-tag">ASIA</span>
+        <h3>INDIA</h3>
+        <p>El Taj Mahal es solo el inicio. Un pa&iacute;s que se siente, no se visita</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 8 — TESTIMONIALS ═══ -->
+<section class="testimonials-section">
+  <div class="testimonials-inner">
+    <div class="reveal">
+      <p class="section-eyebrow">TESTIMONIOS</p>
+      <h2 class="section-h2">
+        LO QUE DICEN
+        <span class="italic">quienes ya viajaron diferente</span>
+      </h2>
+    </div>
+
+    <div class="testimonials-grid">
+      <div class="test-card reveal reveal-delay-1">
+        <div class="test-stars">
+          <div class="test-star"></div><div class="test-star"></div><div class="test-star"></div><div class="test-star"></div><div class="test-star"></div>
+        </div>
+        <p class="test-quote">
+          &ldquo;Nuestro aniversario en Maldivas fue exactamente como lo so&ntilde;amos, pero mejor. Kiko gestion&oacute; todo: la villa, las transferencias, las cenas privadas en la playa. No tuvimos que pensar en nada &mdash; solo vivir.&rdquo;
+        </p>
+        <div class="test-divider">
+          <div class="test-avatar">MC</div>
+          <div>
+            <div class="test-author-name">Mar&iacute;a &amp; Carlos</div>
+            <div class="test-author-loc">Ciudad de M&eacute;xico &middot; Aniversario de bodas</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="test-card reveal reveal-delay-2">
+        <div class="test-stars">
+          <div class="test-star"></div><div class="test-star"></div><div class="test-star"></div><div class="test-star"></div><div class="test-star"></div>
+        </div>
+        <p class="test-quote">
+          &ldquo;Llev&aacute;bamos 3 a&ntilde;os queriendo hacer Jap&oacute;n en familia. Con Kiko lo hicimos diferente: sin tours masivos, con los restaurantes correctos, y con acceso a un ryokan que nunca hubi&eacute;ramos encontrado solos.&rdquo;
+        </p>
+        <div class="test-divider">
+          <div class="test-avatar">RF</div>
+          <div>
+            <div class="test-author-name">Rodrigo &amp; Familia</div>
+            <div class="test-author-loc">Monterrey &middot; Jap&oacute;n en familia</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="test-card reveal reveal-delay-3">
+        <div class="test-stars">
+          <div class="test-star"></div><div class="test-star"></div><div class="test-star"></div><div class="test-star"></div><div class="test-star"></div>
+        </div>
+        <p class="test-quote">
+          &ldquo;Viajo constantemente por trabajo y siempre terminaba estresado con la log&iacute;stica. Llegu&eacute; al Four Seasons con un upgrade que nunca ped&iacute; &mdash; Kiko ya lo hab&iacute;a gestionado antes de que aterrizara.&rdquo;
+        </p>
+        <div class="test-divider">
+          <div class="test-avatar">AL</div>
+          <div>
+            <div class="test-author-name">Alejandro L.</div>
+            <div class="test-author-loc">CDMX &middot; Viajero frecuente de negocios</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 9 — HOW IT WORKS ═══ -->
+<section class="process-section">
+  <div class="reveal">
+    <p class="section-eyebrow">EL PROCESO</p>
+    <h2 class="section-h2">
+      AS&Iacute; DE SIMPLE
+      <span class="italic">es empezar</span>
+    </h2>
+  </div>
+
+  <div class="process-grid">
+    <div class="process-card reveal reveal-delay-1">
+      <div class="process-ghost">01</div>
+      <h3>AGENDA TU LLAMADA</h3>
+      <p>15 minutos para contarme tus sue&ntilde;os, tiempos y lo que m&aacute;s valoras cuando viajas. Sin formularios. Sin compromisos.</p>
+      <div class="process-badge"><span>15 MIN &middot; GOOGLE MEET</span></div>
+    </div>
+    <div class="process-card reveal reveal-delay-2">
+      <div class="process-ghost">02</div>
+      <h3>RECIBE TU PROPUESTA</h3>
+      <p>Dise&ntilde;o un itinerario completo y personalizado para ti. Cada hotel seleccionado con criterio, cada experiencia pensada para lo que me dijiste que quer&iacute;as vivir.</p>
+      <div class="process-badge"><span>24&ndash;48 HRS</span></div>
+    </div>
+    <div class="process-card reveal reveal-delay-3">
+      <div class="process-ghost">03</div>
+      <h3>VIAJA SIN PREOCUPACIONES</h3>
+      <p>Yo gestiono todo &mdash; confirmaciones, upgrades, cambios de &uacute;ltimo momento. T&uacute; solo piensas en disfrutar. Disponible 24hrs durante tu viaje.</p>
+      <div class="process-badge"><span>ACOMPA&Ntilde;AMIENTO TOTAL</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION 10 — BOOKING ═══ -->
+<section class="booking-section" id="agendar">
+  <div class="booking-inner">
+    <div class="booking-header reveal">
+      <p class="section-eyebrow">DISPONIBILIDAD LIMITADA PARA NUEVOS CLIENTES</p>
+      <h2 class="section-h2">
+        TU PR&Oacute;XIMO VIAJE<br>MERECE SER
+        <span class="italic">extraordinario</span>
+      </h2>
+      <p class="booking-sub">
+        No est&aacute;s buscando un paquete. Est&aacute;s buscando una experiencia que valga la pena contar. Empieza aqu&iacute;.
+      </p>
+    </div>
+
+    <div class="booking-wrapper reveal reveal-delay-1">
+      <iframe
+        src="https://api.leadconnectorhq.com/widget/booking/7dbyLTOSpRoR7oMXkBBX"
+        style="width: 100%;border:none;overflow: hidden;"
+        scrolling="no"
+        id="7dbyLTOSpRoR7oMXkBBX_1771266826691">
+      </iframe>
+      <script src="https://link.msgsndr.com/js/form_embed.js" type="text/javascript"></script>
+    </div>
+
+    <p class="booking-fine">Sin costo de asesor&iacute;a &middot; Sin compromiso &middot; Respuesta en menos de 24hrs</p>
+    <a href="https://wa.me/521XXXXXXXXXX" class="booking-wa" target="_blank" rel="noopener">O escr&iacute;beme por WhatsApp &rarr;</a>
+  </div>
+</section>
+
+<!-- ═══ SECTION 11 — FOOTER ═══ -->
+<footer class="footer">
+  <a href="#" aria-label="Kiko Iga — Inicio">
+    <img src="4. KIKO LOGO BLACK.png" alt="Kiko Iga" class="footer-logo">
+  </a>
+  <div class="footer-center">
+    <a href="https://instagram.com/kikoiga" target="_blank" rel="noopener" aria-label="Instagram de Kiko Iga">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
+    </a>
+  </div>
+  <p class="footer-copy">&copy; 2025 Kiko Iga &middot; Concierge de Viaje Privado</p>
+</footer>
+
+<!-- ═══ JAVASCRIPT ═══ -->
+<script>
+// 1. Nav scroll
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 50);
+}, { passive: true });
+
+// 2. Smooth scroll
+document.querySelectorAll('a[href="#agendar"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    document.getElementById('agendar').scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+// 3. IntersectionObserver reveals
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// 4. Destination drag scroll
+const scroll = document.querySelector('.dest-scroll');
+if (scroll) {
+  let isDown = false, startX, sl;
+  scroll.addEventListener('mousedown', e => {
+    isDown = true;
+    scroll.classList.add('grabbing');
+    startX = e.pageX - scroll.offsetLeft;
+    sl = scroll.scrollLeft;
+  });
+  ['mouseleave','mouseup'].forEach(ev =>
+    scroll.addEventListener(ev, () => { isDown = false; scroll.classList.remove('grabbing'); })
+  );
+  scroll.addEventListener('mousemove', e => {
+    if (!isDown) return;
+    e.preventDefault();
+    scroll.scrollLeft = sl - (e.pageX - scroll.offsetLeft - startX) * 2;
+  });
+}
+
+// 5. Force video play + fallback
+const vid = document.querySelector('.hero-video-wrap video');
+if (vid) {
+  // Force play on load (some browsers block autoplay on file://)
+  const tryPlay = () => {
+    vid.play().catch(() => {});
+  };
+  vid.addEventListener('loadeddata', tryPlay);
+  vid.addEventListener('canplay', tryPlay);
+  // Also try immediately and after a short delay
+  tryPlay();
+  setTimeout(tryPlay, 500);
+  setTimeout(tryPlay, 1500);
+
+  vid.addEventListener('error', () => {
+    vid.parentElement.style.backgroundImage = "url('https://images.unsplash.com/photo-1533105079780-92b9be482077?w=1920&q=80')";
+    vid.parentElement.style.backgroundSize = 'cover';
+    vid.parentElement.style.backgroundPosition = 'center';
+    vid.style.display = 'none';
+  });
+}
+</script>
+
+</body>
+</html>
